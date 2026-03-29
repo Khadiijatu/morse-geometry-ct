@@ -30,13 +30,13 @@ The essay is a companion to two papers in preparation:
 
 | Section | Content |
 |---------|---------|
-| **01 — The Morse Landscape** | Interactive: place critical points, watch gradient flow organize |
-| **02 — Broken Trajectories** | Animated compactification of moduli spaces |
-| **03 — Stratified Closures** | Whitney stratification diagram, animated |
-| **04 — The Conceptual Bridge** | CT reconstruction as gradient flow — side-by-side comparison |
-| **05 — Neural Representations** | What INRs are; live simulated training animation |
-| **06 — The Open Question** | Precise mathematical statement of the research programme |
-| **07 — About & References** | Context, author, bibliography |
+| **01 - The Morse Landscape** | Interactive: place critical points, watch gradient flow organize |
+| **02 - Broken Trajectories** | Animated compactification of moduli spaces |
+| **03 - Stratified Closures** | Whitney stratification diagram, animated |
+| **04 - The Conceptual Bridge** | CT reconstruction as gradient flow — side-by-side comparison |
+| **05 - Neural Representations** | What INRs are; live simulated training animation |
+| **06 - The Open Question** | Precise mathematical statement of the research programme |
+| **07 - About & References** | Context, author, bibliography |
 
 ---
 
