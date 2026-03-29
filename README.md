@@ -21,7 +21,7 @@ mathematical bridge between:
 
 The essay is a companion to two papers in preparation:
 1. *Conical Models and Whitney Regularity for Stable Manifold Closures in Morse-Smale
-   Gradient Flows: A Unified Proof* (arXiv preprint, math.DG / cs.CV)
+   Gradient Flows: A Unified Proof*
 2. *Geometric Optimization in Differentiable Rendering: A Morse-Theoretic Perspective*
 
 ---
