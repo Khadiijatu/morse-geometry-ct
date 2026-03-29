@@ -13,10 +13,10 @@ Live site: **https://khadiijatu.github.io/morse-geometry-ct/**
 This is a self-contained, interactive visual essay exploring the conceptual and
 mathematical bridge between:
 
-- **Morse-Smale gradient flow theory** — specifically, the stratified structure of
+- **Morse-Smale gradient flow theory**, specifically, the stratified structure of
   stable and unstable manifold closures, as studied in the author's MSc thesis
   (Aix-Marseille University, 2020, supervisor: Prof. D. J. A. Trotman)
-- **Neural CT image reconstruction** — specifically, Implicit Neural Representations
+- **Neural CT image reconstruction**, specifically, Implicit Neural Representations
   and the geometry of their optimization landscapes
 
 The essay is a companion to two papers in preparation:
@@ -46,7 +46,7 @@ The essay is a companion to two papers in preparation:
 - All diagrams and animations are pure HTML5 Canvas + CSS
 - MathJax renders all mathematical notation
 - Fully responsive (mobile/tablet/desktop)
-- No build step required — `index.html` is the entire site
+- No build step required: `index.html` is the entire site
 
 ---
 
