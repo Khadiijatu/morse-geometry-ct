@@ -1,0 +1,1688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>From Broken Trajectories to Broken Pixels</title>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet"/>
+
+<!-- MathJax -->
+<script>
+MathJax = {
+  tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$']] },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+
+<style>
+/* ═══════════════════════════════════════════════════════
+   TOKENS & RESET
+═══════════════════════════════════════════════════════ */
+:root {
+  --bg:        #0a0c10;
+  --bg2:       #0f1218;
+  --bg3:       #141820;
+  --surface:   #1a2030;
+  --border:    #2a3448;
+  --navy:      #1e4d8c;
+  --blue:      #3d7fcc;
+  --lightblue: #6fa8dc;
+  --cyan:      #4ecdc4;
+  --orange:    #e8834a;
+  --gold:      #c9a84c;
+  --green:     #5aaa72;
+  --red:       #d4635a;
+  --text:      #e8e4dc;
+  --text2:     #9aa0b0;
+  --text3:     #5a6070;
+  --mono:      'JetBrains Mono', monospace;
+  --serif:     'EB Garamond', Georgia, serif;
+  --display:   'Cormorant Garamond', Georgia, serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.75;
+  overflow-x: hidden;
+}
+
+/* ═══════════════════════════════════════════════════════
+   TYPOGRAPHY
+═══════════════════════════════════════════════════════ */
+h1 {
+  font-family: var(--display);
+  font-weight: 300;
+  font-size: clamp(2.4rem, 6vw, 5rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+h2 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+  line-height: 1.2;
+  color: var(--lightblue);
+  margin-bottom: 0.6em;
+}
+h3 {
+  font-family: var(--mono);
+  font-weight: 400;
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 1em;
+}
+p { margin-bottom: 1.2em; max-width: 68ch; }
+em { font-style: italic; color: var(--gold); }
+strong { font-weight: 600; color: var(--text); }
+
+.mono { font-family: var(--mono); font-size: 0.82em; color: var(--cyan); }
+
+/* ═══════════════════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════════════════ */
+.section {
+  min-height: 100vh;
+  padding: clamp(60px, 10vh, 120px) clamp(24px, 8vw, 120px);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-bottom: 1px solid var(--border);
+}
+
+.section--split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .section--split { grid-template-columns: 1fr; gap: 40px; }
+}
+
+.section-number {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text3);
+  letter-spacing: 0.2em;
+  margin-bottom: 1.5em;
+}
+
+/* ═══════════════════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════════════════ */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 40px;
+  background: rgba(10,12,16,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-brand {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--cyan);
+  letter-spacing: 0.1em;
+}
+
+.nav-links {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--text2);
+  text-decoration: none;
+  letter-spacing: 0.08em;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--cyan); }
+
+@media (max-width: 700px) { .nav-links { display: none; } }
+
+/* ═══════════════════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════════════════ */
+#hero {
+  min-height: 100vh;
+  padding-top: 80px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 60px;
+  padding-left: clamp(24px, 8vw, 120px);
+  padding-right: clamp(24px, 8vw, 120px);
+}
+
+@media (max-width: 900px) {
+  #hero { grid-template-columns: 1fr; }
+}
+
+.hero-text { position: relative; z-index: 2; }
+
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--cyan);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 1.2em;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hero-eyebrow::before {
+  content: '';
+  display: block;
+  width: 30px;
+  height: 1px;
+  background: var(--cyan);
+}
+
+.hero-title { margin-bottom: 0.5em; }
+
+.hero-subtitle {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  color: var(--text2);
+  margin-bottom: 2em;
+  max-width: 50ch;
+}
+
+.hero-meta {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--text3);
+  line-height: 2;
+}
+
+.hero-meta span { color: var(--text2); }
+
+.scroll-hint {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--text3);
+  letter-spacing: 0.2em;
+  text-align: center;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+/* ═══════════════════════════════════════════════════════
+   CANVAS CONTAINERS
+═══════════════════════════════════════════════════════ */
+.canvas-wrap {
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg2);
+  overflow: hidden;
+}
+
+.canvas-label {
+  position: absolute;
+  bottom: 12px;
+  left: 16px;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--text3);
+  letter-spacing: 0.1em;
+}
+
+.canvas-caption {
+  margin-top: 14px;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--text2);
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════════════════
+   HIGHLIGHT BOXES
+═══════════════════════════════════════════════════════ */
+.theorem-box {
+  border-left: 3px solid var(--blue);
+  padding: 20px 24px;
+  background: rgba(61,127,204,0.06);
+  margin: 2em 0;
+  border-radius: 0 4px 4px 0;
+}
+
+.theorem-box .theorem-label {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--blue);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 0.6em;
+}
+
+.definition-box {
+  border-left: 3px solid var(--cyan);
+  padding: 20px 24px;
+  background: rgba(78,205,196,0.05);
+  margin: 2em 0;
+  border-radius: 0 4px 4px 0;
+}
+
+.definition-box .theorem-label { color: var(--cyan); }
+
+.question-box {
+  border: 1px solid var(--gold);
+  padding: 28px 32px;
+  background: rgba(201,168,76,0.05);
+  margin: 2em 0;
+  border-radius: 4px;
+  position: relative;
+}
+
+.question-box::before {
+  content: '?';
+  position: absolute;
+  top: -1px; right: 20px;
+  font-family: var(--display);
+  font-size: 4rem;
+  color: rgba(201,168,76,0.12);
+  line-height: 1;
+}
+
+.question-box .theorem-label { color: var(--gold); }
+
+/* ═══════════════════════════════════════════════════════
+   DIVIDER
+═══════════════════════════════════════════════════════ */
+.divider {
+  width: 40px;
+  height: 1px;
+  background: var(--border);
+  margin: 2.5em 0;
+}
+
+/* ═══════════════════════════════════════════════════════
+   INTERACTIVE CONTROLS
+═══════════════════════════════════════════════════════ */
+.controls {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.btn {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text2);
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+
+.btn:hover, .btn.active {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  background: rgba(78,205,196,0.07);
+}
+
+.btn.danger:hover { border-color: var(--orange); color: var(--orange); background: rgba(232,131,74,0.07); }
+
+/* ═══════════════════════════════════════════════════════
+   SECTION BACKGROUNDS
+═══════════════════════════════════════════════════════ */
+#morse { background: var(--bg); }
+#trajectories { background: var(--bg2); }
+#stratification { background: var(--bg); }
+#bridge { background: var(--bg2); }
+#inr { background: var(--bg); }
+#question { background: var(--bg2); }
+#about { background: var(--bg3); border-bottom: none; }
+
+/* ═══════════════════════════════════════════════════════
+   GRID / DIAGRAM UTILITIES
+═══════════════════════════════════════════════════════ */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+@media (max-width: 800px) { .two-col { grid-template-columns: 1fr; } }
+
+/* ═══════════════════════════════════════════════════════
+   FOOT
+═══════════════════════════════════════════════════════ */
+footer {
+  padding: 40px clamp(24px, 8vw, 120px);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text3);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  border-top: 1px solid var(--border);
+}
+
+/* ═══════════════════════════════════════════════════════
+   FADE-IN ON SCROLL
+═══════════════════════════════════════════════════════ */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ═══════════════════════════════════════════════════════
+   PROGRESS BAR
+═══════════════════════════════════════════════════════ */
+#progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  background: var(--cyan);
+  z-index: 200;
+  transition: width 0.1s linear;
+}
+</style>
+</head>
+
+<body>
+
+<div id="progress"></div>
+
+<!-- ═══ NAV ═══════════════════════════════════════════════ -->
+<nav>
+  <div class="nav-brand">K. CISSÉ — RESEARCH ESSAY</div>
+  <ul class="nav-links">
+    <li><a href="#morse">Morse</a></li>
+    <li><a href="#trajectories">Trajectories</a></li>
+    <li><a href="#stratification">Stratification</a></li>
+    <li><a href="#bridge">The Bridge</a></li>
+    <li><a href="#inr">Neural Reps</a></li>
+    <li><a href="#question">Open Question</a></li>
+  </ul>
+</nav>
+
+<!-- ═══ HERO ═══════════════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-text reveal">
+    <div class="hero-eyebrow">Perspective · Mathematics meets Imaging</div>
+    <h1 class="hero-title">From Broken<br/>Trajectories<br/>to Broken<br/>Pixels</h1>
+    <p class="hero-subtitle">When Morse geometry illuminates the optimization landscape of neural image reconstruction</p>
+  </div>
+  <div class="canvas-wrap reveal" style="aspect-ratio:1; max-width:500px;">
+    <canvas id="heroCanvas" style="width:100%;height:100%;"></canvas>
+    <div class="canvas-label">GRADIENT FLOW ON A MORSE FUNCTION — LIVE</div>
+  </div>
+  <div class="scroll-hint">↓ scroll to explore</div>
+</section>
+
+<!-- ═══ SECTION 1: MORSE LANDSCAPE ════════════════════════ -->
+<section id="morse" class="section">
+  <div class="section-number">01 / 07 — THE MORSE LANDSCAPE</div>
+  <div class="section--split">
+    <div class="reveal">
+      <h3>Starting Point</h3>
+      <h2>A function encodes topology</h2>
+      <p>
+        Let $M$ be a compact smooth manifold and $f : M \to \mathbb{R}$ a smooth
+        function whose critical points are all <em>non-degenerate</em>, meaning
+        the Hessian $\mathrm{Hess}_p\, f$ is invertible at every critical point $p$.
+        Such a function is called a <strong>Morse function</strong>.
+      </p>
+
+      <div class="definition-box">
+        <div class="theorem-label">Definition</div>
+        <p style="margin:0;">
+          The <em>Morse index</em> $\lambda = \mathrm{ind}(p)$ is the number of
+          negative eigenvalues of $\mathrm{Hess}_p\, f$. Near $p$, the Morse Lemma
+          gives coordinates in which
+          $$f = f(p) - x_1^2 - \cdots - x_\lambda^2 + x_{\lambda+1}^2 + \cdots + x_n^2.$$
+        </p>
+      </div>
+
+      <p>
+        Equip $M$ with a Riemannian metric $g$. The negative gradient flow
+        $\dot x = -\nabla f(x)$ is the dynamical system that descends $f$ as steeply
+        as possible. Since $\frac{d}{dt}f(\phi_t(x)) = -\|\nabla f\|^2 \leq 0$,
+        the function $f$ is a <em>Lyapunov function</em>: every trajectory flows
+        strictly downhill toward critical points.
+      </p>
+
+      <p class="mono">
+        Click on the diagram to place critical points and watch the flow organize.
+      </p>
+      <div class="controls">
+        <button class="btn active" id="btnMin" onclick="setMode('min')">Add minimum (λ=0)</button>
+        <button class="btn" id="btnSaddle" onclick="setMode('saddle')">Add saddle (λ=1)</button>
+        <button class="btn" id="btnMax" onclick="setMode('max')">Add maximum (λ=2)</button>
+        <button class="btn danger" onclick="clearMorse()">Clear</button>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="canvas-wrap" style="aspect-ratio:1;">
+        <canvas id="morseCanvas" style="width:100%;height:100%;cursor:crosshair;"></canvas>
+        <div class="canvas-label">INTERACTIVE — CLICK TO ADD CRITICAL POINTS</div>
+      </div>
+      <p class="canvas-caption">
+        Green = minima (index 0) · Orange = saddles (index 1) · Red = maxima (index 2)<br/>
+        Blue curves = stable manifolds · Arrows = gradient flow direction
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 2: BROKEN TRAJECTORIES ════════════════════ -->
+<section id="trajectories" class="section">
+  <div class="section-number">02 / 07 — CONNECTING & BROKEN TRAJECTORIES</div>
+  <div class="section--split">
+    <div class="reveal">
+      <div class="canvas-wrap" style="aspect-ratio:1;">
+        <canvas id="trajCanvas" style="width:100%;height:100%;"></canvas>
+        <div class="canvas-label">BROKEN TRAJECTORY ANIMATION</div>
+      </div>
+      <p class="canvas-caption">
+        A sequence of trajectories (blue) converges to a broken trajectory (orange dashed).
+        The parameter $T$ controls how long each trajectory lingers near the saddle.
+      </p>
+      <div class="controls" style="margin-top:12px;">
+        <button class="btn" onclick="animatBreaking()">Animate breaking</button>
+        <button class="btn" onclick="resetTraj()">Reset</button>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <h3>Compactness</h3>
+      <h2>When trajectories break</h2>
+      <p>
+        In the Morse-Smale setting, the moduli space of flow lines from $p$ to $q$
+        (modulo time reparametrisation),
+        $$\widehat{\mathcal{M}}(p,q) = W^u(p) \cap W^s(q)\, /\, \mathbb{R},$$
+        is a smooth manifold of dimension $\mathrm{ind}(p) - \mathrm{ind}(q) - 1$.
+      </p>
+
+      <div class="theorem-box">
+        <div class="theorem-label">Compactification Theorem</div>
+        <p style="margin:0;">
+          The closure $\overline{\widehat{\mathcal{M}}(p,q)}$ is compact, and every
+          boundary point is a <em>broken trajectory</em>:
+          $$\partial\,\overline{\widehat{\mathcal{M}}(p,q)}
+            = \bigsqcup_{r}\,\widehat{\mathcal{M}}(p,r)\times\widehat{\mathcal{M}}(r,q)$$
+          where $r$ ranges over intermediate critical points.
+        </p>
+      </div>
+
+      <p>
+        Geometrically: a trajectory from $p$ to $q$ can spend increasingly long time
+        near an intermediate critical point $r$. In the limit, the single trajectory
+        <em>breaks</em> into two pieces, each a genuine flow line. The Morse index
+        strictly decreases at each break, so the chain is finite.
+      </p>
+
+      <p>
+        This compactification is not pathological: it is <em>conical</em>. The
+        neighbourhood of a broken point looks like a product of trajectory spaces
+        crossed with a cone parameter measuring the breaking time.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 3: STRATIFICATION ═════════════════════════ -->
+<section id="stratification" class="section">
+  <div class="section-number">03 / 07 — STRATIFIED CLOSURES</div>
+  <div class="section--split">
+    <div class="reveal">
+      <h3>Main Result</h3>
+      <h2>The closure is a stratified space</h2>
+      <p>
+        The closure $\overline{W^s(p)}$ decomposes into smooth pieces indexed by
+        critical points of lower index:
+        $$\overline{W^s(p)} = \bigsqcup_{q\,:\,\mathrm{ind}(q)\leq\mathrm{ind}(p)} S_q, \quad S_q = W^s(q)\cap\overline{W^s(p)}.$$
+      </p>
+      <p>
+        This is a genuine <em>Whitney stratification</em>: the strata are smooth manifolds,
+        they satisfy the <em>frontier condition</em> ($S_r \cap \overline{S_q} \neq \emptyset
+        \Rightarrow S_r \subset \overline{S_q}$), and they satisfy <em>Whitney's condition (B)</em>:
+        tangent spaces of higher strata cannot tilt away from the direction of approach
+        from lower strata.
+      </p>
+
+      <div class="theorem-box">
+        <div class="theorem-label">Main Theorem (unified proof)</div>
+        <p style="margin:0;">
+          The stratification $\{S_q\}$ of $\overline{W^s(p)}$ is simultaneously
+          <strong>locally conical</strong> (Laudenbach) and <strong>Whitney regular</strong>
+          (Whitney-Mather). These two descriptions are equivalent in the Morse-Smale setting.
+        </p>
+      </div>
+
+      <p>
+        The conical model near $x \in S_q$:
+        $$U \cap \overline{W^s(p)}\; \cong\; (S_q \cap U) \times C(L_x)$$
+        where $L_x \cong \bigsqcup \widehat{\mathcal{M}}(q,r_1)\times\cdots\times\widehat{\mathcal{M}}(r_k,p)$
+        is a product of moduli spaces — the <em>link</em> at $x$.
+      </p>
+    </div>
+
+    <div class="reveal">
+      <div class="canvas-wrap" style="aspect-ratio:0.9;">
+        <canvas id="stratCanvas" style="width:100%;height:100%;"></canvas>
+        <div class="canvas-label">STRATIFICATION DIAGRAM — ANIMATED</div>
+      </div>
+      <p class="canvas-caption">
+        Three strata of $\overline{W^s(p)}$ with dimensions $n-\lambda_p > n-\lambda_r > n-\lambda_q$.
+        The conical local model near the boundary stratum is shown in gold.
+      </p>
+      <div class="controls">
+        <button class="btn" onclick="animateStrat()">Animate strata</button>
+        <button class="btn" onclick="showCone()">Show conical model</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 4: THE BRIDGE ══════════════════════════════ -->
+<section id="bridge" class="section">
+  <div class="section-number">04 / 07 — THE CONCEPTUAL BRIDGE</div>
+  <div class="reveal" style="max-width:900px; margin:0 auto;">
+    <h3>Key Observation</h3>
+    <h2>CT reconstruction is a gradient flow</h2>
+    <p>
+      X-ray Computed Tomography measures line integrals of an attenuation function
+      $\mu : \mathbb{R}^3 \to \mathbb{R}$ via the Radon transform:
+      $g = \mathcal{R}\mu + \varepsilon.$
+      Reconstruction inverts this: find $\mu$ from $g$.
+    </p>
+    <p>
+      Modern reconstruction methods, whether iterative, variational, or neural,
+      minimise an energy functional:
+      $$\mathcal{L}(\theta) = \|\mathcal{R}f_\theta - g\|^2 + \lambda R(f_\theta)$$
+      where $f_\theta$ is the reconstructed image (parametrised by $\theta$) and
+      $R$ is a regulariser. Training proceeds by gradient descent:
+      $$\dot\theta(t) = -\nabla_\theta \mathcal{L}(\theta(t)).$$
+    </p>
+
+    <div style="margin: 3em 0;">
+      <canvas id="bridgeCanvas" style="width:100%; height:240px; border:1px solid var(--border); border-radius:4px; background:var(--bg);"></canvas>
+      <p class="canvas-caption" style="margin-top:12px;">
+        Left: gradient flow on a Morse landscape (abstract). Right: gradient descent
+        on a CT reconstruction loss surface (concrete). The mathematical structure is identical.
+      </p>
+    </div>
+
+    <div class="two-col" style="margin-top:2em;">
+      <div class="theorem-box">
+        <div class="theorem-label">Morse Theory Side</div>
+        <p style="margin:0; font-size:0.95em;">
+          — Parameter space: compact manifold $M$<br/>
+          — Energy: Morse function $f : M \to \mathbb{R}$<br/>
+          — Dynamics: $\dot x = -\nabla f(x)$<br/>
+          — Critical points: hyperbolic, finitely many<br/>
+          — Invariant sets: $W^s(p)$, $W^u(p)$ smooth<br/>
+          — Closures: Whitney stratified, conical
+        </p>
+      </div>
+      <div class="theorem-box" style="border-color:var(--orange); background:rgba(232,131,74,0.05);">
+        <div class="theorem-label" style="color:var(--orange);">Neural Reconstruction Side</div>
+        <p style="margin:0; font-size:0.95em;">
+          — Parameter space: weight manifold $\Theta \subseteq \mathbb{R}^N$<br/>
+          — Energy: loss $\mathcal{L}(\theta) = \|\mathcal{R}f_\theta - g\|^2 + \lambda R$<br/>
+          — Dynamics: SGD / Adam / L-BFGS<br/>
+          — Critical points: local minima, saddles, …<br/>
+          — Invariant sets: basins of attraction<br/>
+          — Closures: <em>structure unknown (open problem)</em>
+        </p>
+      </div>
+    </div>
+
+    <p style="margin-top:2em;">
+      The left column is well-understood. The right column is where the research
+      lives. The central question is: <em>how much of the left column's geometric
+      structure survives in the right column?</em>
+    </p>
+  </div>
+</section>
+
+<!-- ═══ SECTION 5: IMPLICIT NEURAL REPRESENTATIONS ════════ -->
+<section id="inr" class="section">
+  <div class="section-number">05 / 07 — IMPLICIT NEURAL REPRESENTATIONS</div>
+  <div class="section--split">
+    <div class="reveal">
+      <h3>The Representation</h3>
+      <h2>A network as a continuous image</h2>
+      <p>
+        An <em>Implicit Neural Representation</em> (INR) replaces a discrete voxel
+        grid with a neural network $f_\theta : \mathbb{R}^3 \to \mathbb{R}$ that
+        maps spatial coordinates to attenuation values. The image is stored in the
+        weights $\theta$, not in a grid.
+      </p>
+      <p>
+        Advantages: <strong>continuous</strong> (query at any resolution),
+        <strong>compact</strong> (millions of parameters instead of billions of
+        voxels), <strong>differentiable</strong> (backpropagation through $f_\theta$
+        and the CT projector gives gradients with respect to $\theta$).
+      </p>
+
+      <div class="definition-box">
+        <div class="theorem-label">SIREN Architecture</div>
+        <p style="margin:0; font-size:0.9em;">
+          $f_\theta(x) = W_n(\sin(W_{n-1}(\cdots \sin(W_1 x + b_1)\cdots) + b_{n-1})) + b_n$<br/><br/>
+          Sinusoidal activations give exact gradients at all frequencies. Crucial
+          for representing sharp features like bone-tissue boundaries in CT.
+        </p>
+      </div>
+
+      <p>
+        The optimisation problem becomes: given CT measurements $g$, find
+        $$\theta^* = \arg\min_\theta \|\mathcal{R}f_\theta - g\|^2 + \lambda R(f_\theta).$$
+        This is a gradient flow on the weight manifold $\Theta$.
+      </p>
+    </div>
+
+    <div class="reveal">
+      <div class="canvas-wrap" style="aspect-ratio:1;">
+        <canvas id="inrCanvas" style="width:100%;height:100%;"></canvas>
+        <div class="canvas-label">INR TRAINING SIMULATION</div>
+      </div>
+      <p class="canvas-caption">
+        Simulated INR reconstruction of a 2D CT phantom. The network progressively
+        learns the image from random projections. Loss landscape shown below.
+      </p>
+      <div class="controls">
+        <button class="btn" onclick="startINR()">Start training</button>
+        <button class="btn" onclick="stopINR()">Pause</button>
+        <button class="btn danger" onclick="resetINR()">Reset</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 6: THE OPEN QUESTION ══════════════════════ -->
+<section id="question" class="section">
+  <div class="section-number">06 / 07 — THE OPEN QUESTION</div>
+  <div class="reveal" style="max-width:860px;">
+    <h3>Research Direction</h3>
+    <h2>Does the loss landscape stratify?</h2>
+    <p>
+      In the Morse-Smale setting, the loss landscape is well-understood: finitely
+      many critical points, smooth invariant manifolds, Whitney-regular closures,
+      conical local models. This is the content of the main theorem.
+    </p>
+    <p>
+      In the INR-CT setting, the loss landscape is far more complex: the parameter
+      space $\Theta$ is high-dimensional, the critical structure is degenerate
+      (the Morse-Smale condition likely fails), and the landscape depends on the
+      specific architecture, the measurement operator, and the regulariser.
+    </p>
+
+    <div class="question-box">
+      <div class="theorem-label">Open Question</div>
+      <p style="font-size:1.05em; margin-bottom:0.8em;">
+        Let $\mathcal{L} : \Theta \to \mathbb{R}$ be the reconstruction loss of an
+        INR model for CT. Under what conditions on the architecture $f_\theta$ and
+        the measurement operator $\mathcal{R}$ does the gradient flow
+        $\dot\theta = -\nabla_\theta\mathcal{L}(\theta)$ generate a stratified
+        decomposition of $\Theta$ with locally conical models?
+      </p>
+      <p style="margin-bottom:0;">
+        More precisely: do the basins of attraction of local minima of $\mathcal{L}$
+        have closures that admit Whitney-regular stratifications? And if so, does the
+        Laudenbach–Whitney-Mather equivalence proved for Morse-Smale systems extend
+        to this non-generic, infinite-resolution setting?
+      </p>
+    </div>
+
+    <p>
+      A positive answer would have concrete consequences. It would explain:
+    </p>
+    <ul style="margin-left:1.5em; margin-bottom:1.5em; line-height:2.2;">
+      <li>why coarse-to-fine optimisation works: it follows connecting trajectories
+        between strata of the landscape hierarchy;</li>
+      <li>why certain initialisations reliably avoid bad local minima: they begin
+        in specific strata whose closures do not intersect the global minimum's
+        basin boundary;</li>
+      <li>how to design regularisers that enforce desired geometric properties of
+        the loss landscape, rather than relying on empirical tuning.</li>
+    </ul>
+
+    <div class="theorem-box">
+      <div class="theorem-label">Conjecture (informal)</div>
+      <p style="margin:0;">
+        For SIREN-type INRs with Tikhonov regularisation and the Radon forward
+        operator, the loss landscape $\mathcal{L}$ is a Morse-Bott function on a
+        stratified subset of $\Theta$, and the stable manifold closures of its
+        critical submanifolds admit conical models whose links are products of
+        spaces of connecting trajectories. A direct generalisation of the
+        finite-dimensional Morse-Smale picture.
+      </p>
+    </div>
+
+    <p>
+      Making this conjecture precise, i.e. identifying the right regularity class,
+      the right notion of Morse-Bott in this setting, and the correct
+      generalisation of the Laudenbach conical construction to degenerate and
+      infinite-dimensional analogues, could be the mathematical programme of this project.
+    </p>
+  </div>
+</section>
+
+<!-- ═══ SECTION 7: ABOUT & REFERENCES ═════════════════════ -->
+<section id="about" class="section">
+  <div class="section-number">07 / 07 — ABOUT & REFERENCES</div>
+  <div class="two-col reveal">
+    <div>
+      <h3>About this work</h3>
+      <h2 style="font-size:1.6rem;">Research context</h2>
+      <p>
+        This essay accompanies a paper in preparation:
+        <em>Geometric Optimization in Differentiable Rendering: a Morse-Theoretic
+        Perspective</em>, and the companion preprint
+        <em>Conical Models and Whitney Regularity for Stable Manifold Closures in
+        Morse-Smale Gradient Flows: A Unified Proof</em>.
+      </p>
+      <p>
+        The author holds an MSc in Mathematics from Aix-Marseille University
+        (supervisor: Prof. David J. A. Trotman, 1941–2025), where the master's thesis
+        established the main theorem described in Section 3.
+      </p>
+    </div>
+
+    <div>
+      <h3>Selected references</h3>
+      <div style="font-size:0.85em; line-height:2; color:var(--text2);">
+        <p>[1] Milnor, J. <em>Morse Theory</em>. Princeton University Press, 1963.</p>
+        <p>[2] Laudenbach, F. A Morse complex on manifolds with boundary.
+           <em>Enseign. Math.</em> 57, 2011.</p>
+        <p>[3] Whitney, H. Tangents to an analytic variety.
+           <em>Ann. of Math.</em> 81, 1965.</p>
+        <p>[4] Mather, J. N. Notes on topological stability. Harvard, 1970.</p>
+        <p>[5] Goresky–MacPherson. <em>Stratified Morse Theory</em>. Springer, 1988.</p>
+        <p>[6] Trotman, D. J. A. Stratification theory. In <em>Handbook of Geometry
+           and Topology of Singularities I</em>. Springer, 2020.</p>
+        <p>[7] Sitzmann et al. Implicit Neural Representations with Periodic Activation
+           Functions (SIREN). <em>NeurIPS</em>, 2020.</p>
+        <p>[8] Cissé, K. (in prep.) Conical models and Whitney regularity… arXiv.</p>
+        <p>[9] Cissé, K. (in prep.) Geometric optimization in differentiable
+           rendering. 2025–2026.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© Khadidiatou Cissé · 2026</span>
+  <span>khadidiatoucisse4@hotmail.com</span>
+  <span>Built with HTML/CSS/JS · No frameworks</span>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════════════════ -->
+<script>
+// ── Progress bar ─────────────────────────────────────────
+window.addEventListener('scroll', () => {
+  const p = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+  document.getElementById('progress').style.width = (p * 100) + '%';
+});
+
+// ── Reveal on scroll ─────────────────────────────────────
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(r => observer.observe(r));
+
+// ── Utility: get canvas ctx ──────────────────────────────
+function getCtx(id) {
+  const canvas = document.getElementById(id);
+  if (!canvas) return null;
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  if (rect.width === 0) return null;
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx._w = rect.width;
+  ctx._h = rect.height;
+  return ctx;
+}
+
+// ══════════════════════════════════════════════════════════
+// HERO CANVAS — animated gradient flow on a Morse function
+// ══════════════════════════════════════════════════════════
+(function heroFlow() {
+  const canvas = document.getElementById('heroCanvas');
+  let ctx, W, H, particles = [], frame = 0;
+
+  function morseFn(x, y) {
+    const cx = x - 0.5, cy = y - 0.5;
+    return Math.sin(cx * Math.PI * 3) * Math.cos(cy * Math.PI * 2.5)
+         + 0.5 * Math.sin(cx * Math.PI * 1.5 + 1) * Math.sin(cy * Math.PI * 2);
+  }
+
+  function grad(x, y) {
+    const h = 0.002;
+    return {
+      gx: (morseFn(x + h, y) - morseFn(x - h, y)) / (2 * h),
+      gy: (morseFn(x, y + h) - morseFn(x, y - h)) / (2 * h)
+    };
+  }
+
+  function init() {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    W = rect.width; H = rect.height;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    particles = Array.from({length: 180}, () => ({
+      x: Math.random(), y: Math.random(),
+      life: Math.random() * 80, maxLife: 80 + Math.random() * 60,
+      speed: 0.0008 + Math.random() * 0.0006
+    }));
+  }
+
+  function drawLevel() {
+    const img = ctx.createImageData(W | 0, H | 0);
+    for (let px = 0; px < (W | 0); px++) {
+      for (let py = 0; py < (H | 0); py++) {
+        const v = morseFn(px / W, py / H);
+        const t = (v + 1.2) / 2.4;
+        const r = Math.round(10 + t * 30);
+        const g = Math.round(18 + t * 30);
+        const b = Math.round(30 + t * 60);
+        const idx = (py * (W | 0) + px) * 4;
+        img.data[idx] = r; img.data[idx+1] = g;
+        img.data[idx+2] = b; img.data[idx+3] = 255;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+
+  function tick() {
+    if (!ctx) { init(); }
+    frame++;
+    if (frame % 300 === 0) drawLevel();
+
+    if (frame === 1) drawLevel();
+
+    particles.forEach(p => {
+      const {gx, gy} = grad(p.x, p.y);
+      p.x -= gx * p.speed;
+      p.y -= gy * p.speed;
+      p.life++;
+
+      if (p.life > p.maxLife || p.x < 0 || p.x > 1 || p.y < 0 || p.y > 1) {
+        p.x = Math.random(); p.y = Math.random(); p.life = 0;
+      }
+
+      const alpha = Math.sin(p.life / p.maxLife * Math.PI) * 0.7;
+      const v = morseFn(p.x, p.y);
+      const t = (v + 1.2) / 2.4;
+      const r = Math.round(80 + t * 120);
+      const g = Math.round(160 + t * 80);
+      const b = Math.round(220 + t * 35);
+
+      ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+      ctx.beginPath();
+      ctx.arc(p.x * W, p.y * H, 1.2, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    requestAnimationFrame(tick);
+  }
+
+  init();
+  tick();
+})();
+
+// ══════════════════════════════════════════════════════════
+// MORSE CANVAS — interactive critical points
+// ══════════════════════════════════════════════════════════
+let morseMode = 'min';
+let morsePoints = [];
+let morseCtx, morseW, morseH;
+
+function setMode(m) {
+  morseMode = m;
+  ['btnMin','btnSaddle','btnMax'].forEach(id => {
+    document.getElementById(id).classList.remove('active');
+  });
+  const map = {min:'btnMin', saddle:'btnSaddle', max:'btnMax'};
+  document.getElementById(map[m]).classList.add('active');
+}
+
+function clearMorse() {
+  morsePoints = [];
+  drawMorse();
+}
+
+(function initMorse() {
+  const canvas = document.getElementById('morseCanvas');
+
+  function setup() {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    morseW = rect.width; morseH = rect.height;
+    canvas.width = morseW * dpr; canvas.height = morseH * dpr;
+    morseCtx = canvas.getContext('2d');
+    morseCtx.scale(dpr, dpr);
+    drawMorse();
+  }
+
+  canvas.addEventListener('click', e => {
+    const rect = canvas.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / morseW;
+    const y = (e.clientY - rect.top) / morseH;
+    morsePoints.push({ x, y, type: morseMode });
+    drawMorse();
+  });
+
+  setup();
+  window.addEventListener('resize', () => setTimeout(setup, 100));
+})();
+
+function drawMorse() {
+  if (!morseCtx) return;
+  const ctx = morseCtx, W = morseW, H = morseH;
+  ctx.clearRect(0, 0, W, H);
+
+  // Grid background
+  ctx.strokeStyle = 'rgba(42,52,72,0.5)';
+  ctx.lineWidth = 0.5;
+  for (let i = 0; i <= 10; i++) {
+    ctx.beginPath(); ctx.moveTo(i/10*W,0); ctx.lineTo(i/10*W,H); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0,i/10*H); ctx.lineTo(W,i/10*H); ctx.stroke();
+  }
+
+  // For each pair of critical points with index diff 1, draw a connecting arc
+  const mins = morsePoints.filter(p=>p.type==='min');
+  const saddles = morsePoints.filter(p=>p.type==='saddle');
+  const maxs = morsePoints.filter(p=>p.type==='max');
+
+  saddles.forEach(s => {
+    mins.forEach(m => {
+      // Draw stable manifold segment (approaching saddle from below)
+      const steps = 30;
+      ctx.beginPath();
+      ctx.strokeStyle = 'rgba(61,127,204,0.4)';
+      ctx.lineWidth = 1;
+      for (let t = 0; t <= steps; t++) {
+        const frac = t / steps;
+        const px = m.x + (s.x - m.x) * frac + Math.sin(frac * Math.PI) * 0.04;
+        const py = m.y + (s.y - m.y) * frac;
+        if (t === 0) ctx.moveTo(px*W, py*H); else ctx.lineTo(px*W, py*H);
+      }
+      ctx.stroke();
+    });
+    maxs.forEach(mx => {
+      const steps = 30;
+      ctx.beginPath();
+      ctx.strokeStyle = 'rgba(212,99,90,0.4)';
+      ctx.lineWidth = 1;
+      for (let t = 0; t <= steps; t++) {
+        const frac = t / steps;
+        const px = s.x + (mx.x - s.x) * frac - Math.sin(frac*Math.PI)*0.04;
+        const py = s.y + (mx.y - s.y) * frac;
+        if (t === 0) ctx.moveTo(px*W, py*H); else ctx.lineTo(px*W, py*H);
+      }
+      ctx.stroke();
+    });
+  });
+
+  // Flow direction arrows
+  if (morsePoints.length >= 2) {
+    for (let i = 0; i < Math.min(morsePoints.length-1, 6); i++) {
+      const a = morsePoints[i], b = morsePoints[i+1];
+      const midX = (a.x+b.x)/2*W, midY = (a.y+b.y)/2*H;
+      const dx = (b.x-a.x)*W, dy = (b.y-a.y)*H;
+      const len = Math.sqrt(dx*dx+dy*dy);
+      if (len > 0) {
+        const nx = dx/len, ny = dy/len;
+        ctx.strokeStyle = 'rgba(201,168,76,0.5)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(midX - nx*8, midY - ny*8);
+        ctx.lineTo(midX + nx*8, midY + ny*8);
+        ctx.stroke();
+        // arrowhead
+        ctx.fillStyle = 'rgba(201,168,76,0.6)';
+        ctx.beginPath();
+        ctx.moveTo(midX + nx*8, midY + ny*8);
+        ctx.lineTo(midX + nx*8 - ny*5 - nx*6, midY + ny*8 + nx*5 - ny*6);
+        ctx.lineTo(midX + nx*8 + ny*5 - nx*6, midY + ny*8 - nx*5 - ny*6);
+        ctx.fill();
+      }
+    }
+  }
+
+  // Draw critical points
+  const colors = { min: '#5aaa72', saddle: '#e8834a', max: '#d4635a' };
+  const labels = { min: 'λ=0', saddle: 'λ=1', max: 'λ=2' };
+
+  morsePoints.forEach(p => {
+    const cx = p.x * W, cy = p.y * H;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 8, 0, Math.PI*2);
+    ctx.fillStyle = colors[p.type] + '33';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(cx, cy, 5, 0, Math.PI*2);
+    ctx.fillStyle = colors[p.type];
+    ctx.fill();
+    ctx.fillStyle = 'rgba(232,228,220,0.8)';
+    ctx.font = '10px JetBrains Mono, monospace';
+    ctx.fillText(labels[p.type], cx + 8, cy - 6);
+  });
+
+  if (morsePoints.length === 0) {
+    ctx.fillStyle = 'rgba(90,96,112,0.6)';
+    ctx.font = '13px JetBrains Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('Click to place critical points', W/2, H/2);
+    ctx.textAlign = 'left';
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// TRAJECTORY CANVAS — broken trajectory animation
+// ══════════════════════════════════════════════════════════
+let trajCtx, trajW, trajH, trajAnim = null, trajT = 0;
+
+(function initTraj() {
+  const canvas = document.getElementById('trajCanvas');
+  function setup() {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    trajW = rect.width; trajH = rect.height;
+    canvas.width = trajW * dpr; canvas.height = trajH * dpr;
+    trajCtx = canvas.getContext('2d');
+    trajCtx.scale(dpr, dpr);
+    drawTraj(0);
+  }
+  setup();
+  window.addEventListener('resize', () => setTimeout(setup,100));
+})();
+
+function drawTraj(T) {
+  if (!trajCtx) return;
+  const ctx = trajCtx, W = trajW, H = trajH;
+  ctx.clearRect(0, 0, W, H);
+
+  // Three critical points
+  const p = { x: 0.5, y: 0.12 };  // top: p (high index)
+  const r = { x: 0.5, y: 0.5  };  // middle: r (saddle)
+  const q = { x: 0.5, y: 0.88 };  // bottom: q (low index)
+
+  // Draw multiple "nearby" trajectories that break as T increases
+  const nTraj = 5;
+  for (let k = 0; k < nTraj; k++) {
+    const offset = (k - (nTraj-1)/2) * 0.12;
+    const alpha = 0.15 + (1 - Math.abs(offset) / 0.3) * 0.3;
+
+    // As T grows (breaking), trajectory lingers near r
+    // Parametric: x goes from p, passes near r with offset, reaches q
+    const pts = [];
+    const steps = 60;
+    for (let i = 0; i <= steps; i++) {
+      const t = i / steps;
+      let x, y;
+      if (t < 0.5) {
+        // Upper half: p to r
+        const s = t / 0.5;
+        x = p.x + (r.x - p.x) * s + offset * Math.sin(s * Math.PI) * (1 - T * 0.8);
+        y = p.y + (r.y - p.y) * s;
+      } else {
+        // Lower half: r to q
+        const s = (t - 0.5) / 0.5;
+        x = r.x + (q.x - r.x) * s - offset * Math.sin(s * Math.PI) * (1 - T * 0.8);
+        y = r.y + (q.y - r.y) * s;
+        // Breaking: push the lower segment forward in time (s → delayed)
+        const delay = T * 0.6;
+        x = r.x + (q.x - r.x) * Math.max(0, s - delay) / Math.max(0.01,1-delay)
+          - offset * 0.05;
+        y = r.y + (q.y - r.y) * Math.max(0, s - delay) / Math.max(0.01,1-delay);
+      }
+      pts.push([x * W, y * H]);
+    }
+
+    ctx.beginPath();
+    ctx.strokeStyle = `rgba(111,168,220,${alpha})`;
+    ctx.lineWidth = 1.5;
+    pts.forEach(([px, py], i) => i===0 ? ctx.moveTo(px,py) : ctx.lineTo(px,py));
+    ctx.stroke();
+  }
+
+  // Broken trajectory (orange dashed) — appears at T near 1
+  if (T > 0.3) {
+    const brokenAlpha = Math.min(1, (T - 0.3) / 0.7);
+    ctx.setLineDash([6, 4]);
+    ctx.strokeStyle = `rgba(232,131,74,${brokenAlpha * 0.9})`;
+    ctx.lineWidth = 2;
+
+    // Upper piece: p → r
+    ctx.beginPath();
+    ctx.moveTo(p.x*W, p.y*H);
+    ctx.bezierCurveTo(p.x*W, (p.y+(r.y-p.y)*0.5)*H, r.x*W, (r.y-(r.y-p.y)*0.3)*H, r.x*W, r.y*H);
+    ctx.stroke();
+
+    // Lower piece: r → q
+    ctx.beginPath();
+    ctx.moveTo(r.x*W, r.y*H);
+    ctx.bezierCurveTo(r.x*W, (r.y+(q.y-r.y)*0.3)*H, q.x*W, (q.y-(q.y-r.y)*0.5)*H, q.x*W, q.y*H);
+    ctx.stroke();
+
+    ctx.setLineDash([]);
+
+    // Label
+    ctx.fillStyle = `rgba(232,131,74,${brokenAlpha})`;
+    ctx.font = '11px JetBrains Mono, monospace';
+    ctx.fillText('broken trajectory', r.x*W + 14, r.y*H - 10);
+  }
+
+  // Critical points
+  [[p,'#3d7fcc','p'],[r,'#e8834a','r'],[q,'#5aaa72','q']].forEach(([pt,col,lbl]) => {
+    ctx.beginPath();
+    ctx.arc(pt.x*W, pt.y*H, 7, 0, Math.PI*2);
+    ctx.fillStyle = col + '33'; ctx.fill();
+    ctx.beginPath();
+    ctx.arc(pt.x*W, pt.y*H, 4, 0, Math.PI*2);
+    ctx.fillStyle = col; ctx.fill();
+    ctx.fillStyle = '#e8e4dc';
+    ctx.font = 'bold 13px EB Garamond, serif';
+    ctx.fillText(lbl, pt.x*W + 10, pt.y*H + 4);
+  });
+
+  // T indicator
+  ctx.fillStyle = 'rgba(90,96,112,0.8)';
+  ctx.font = '10px JetBrains Mono, monospace';
+  ctx.fillText(`breaking parameter T = ${T.toFixed(2)}`, 10, H - 12);
+}
+
+function animatBreaking() {
+  if (trajAnim) cancelAnimationFrame(trajAnim);
+  trajT = 0;
+  function step() {
+    trajT = Math.min(1, trajT + 0.006);
+    drawTraj(trajT);
+    if (trajT < 1) trajAnim = requestAnimationFrame(step);
+  }
+  trajAnim = requestAnimationFrame(step);
+}
+
+function resetTraj() {
+  if (trajAnim) cancelAnimationFrame(trajAnim);
+  trajT = 0;
+  drawTraj(0);
+}
+
+// ══════════════════════════════════════════════════════════
+// STRATIFICATION CANVAS
+// ══════════════════════════════════════════════════════════
+let stratCtx, stratW, stratH, stratPhase = 0, stratAnim = null;
+
+(function initStrat() {
+  const canvas = document.getElementById('stratCanvas');
+  function setup() {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    stratW = rect.width; stratH = rect.height;
+    canvas.width = stratW * dpr; canvas.height = stratH * dpr;
+    stratCtx = canvas.getContext('2d');
+    stratCtx.scale(dpr, dpr);
+    drawStrat(0, false);
+  }
+  setup();
+  window.addEventListener('resize', () => setTimeout(setup,100));
+})();
+
+function drawStrat(phase, showConeModel) {
+  if (!stratCtx) return;
+  const ctx = stratCtx, W = stratW, H = stratH;
+  ctx.clearRect(0, 0, W, H);
+
+  const a = Math.min(1, phase);
+
+  // Stratum S_p (top, large region)
+  ctx.fillStyle = `rgba(30,77,140,${0.12 * a})`;
+  ctx.strokeStyle = `rgba(61,127,204,${0.5 * a})`;
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.roundRect(W*0.05, H*0.05, W*0.9, H*0.35, 6);
+  ctx.fill(); ctx.stroke();
+  if (a > 0.3) {
+    ctx.fillStyle = `rgba(111,168,220,${(a-0.3)/0.7})`;
+    ctx.font = 'bold 13px EB Garamond, serif';
+    ctx.fillText('Sₚ   dim = n − λₚ', W*0.1, H*0.26);
+    ctx.font = '10px JetBrains Mono, monospace';
+    ctx.fillStyle = `rgba(90,96,112,${(a-0.3)/0.7})`;
+    ctx.fillText('(top stratum, smooth)', W*0.1, H*0.33);
+  }
+
+  // Stratum S_r (middle)
+  if (phase > 0.4) {
+    const b = Math.min(1, (phase-0.4)/0.4);
+    ctx.fillStyle = `rgba(90,170,114,${0.10 * b})`;
+    ctx.strokeStyle = `rgba(90,170,114,${0.5 * b})`;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.roundRect(W*0.05, H*0.45, W*0.55, H*0.25, 6);
+    ctx.fill(); ctx.stroke();
+    ctx.fillStyle = `rgba(90,170,114,${b})`;
+    ctx.font = 'bold 13px EB Garamond, serif';
+    ctx.fillText('Sᵣ   dim = n − λᵣ', W*0.1, H*0.60);
+  }
+
+  // Stratum S_q (bottom)
+  if (phase > 0.7) {
+    const c = Math.min(1, (phase-0.7)/0.3);
+    ctx.fillStyle = `rgba(212,99,90,${0.10 * c})`;
+    ctx.strokeStyle = `rgba(212,99,90,${0.4 * c})`;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.roundRect(W*0.2, H*0.76, W*0.4, H*0.18, 6);
+    ctx.fill(); ctx.stroke();
+    ctx.fillStyle = `rgba(212,99,90,${c})`;
+    ctx.font = 'bold 13px EB Garamond, serif';
+    ctx.fillText('S_q   dim = n − λ_q', W*0.24, H*0.88);
+  }
+
+  // Broken trajectory arrows
+  if (phase > 0.5) {
+    const d = Math.min(1, (phase-0.5)/0.4);
+    ctx.setLineDash([5,4]);
+    ctx.strokeStyle = `rgba(201,168,76,${0.7*d})`;
+    ctx.lineWidth = 1.5;
+    // p → r
+    ctx.beginPath();
+    ctx.moveTo(W*0.5, H*0.40); ctx.lineTo(W*0.4, H*0.45); ctx.stroke();
+    // r → q
+    ctx.beginPath();
+    ctx.moveTo(W*0.35, H*0.70); ctx.lineTo(W*0.38, H*0.76); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // Conical model indicator
+  if (showConeModel && phase >= 1) {
+    // Highlight a point on S_r boundary
+    ctx.beginPath();
+    ctx.arc(W*0.18, H*0.58, 5, 0, Math.PI*2);
+    ctx.fillStyle = '#c9a84c'; ctx.fill();
+
+    // Cone outline
+    ctx.strokeStyle = 'rgba(201,168,76,0.6)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3,3]);
+    ctx.beginPath();
+    ctx.moveTo(W*0.18, H*0.58);
+    ctx.lineTo(W*0.06, H*0.44);
+    ctx.moveTo(W*0.18, H*0.58);
+    ctx.lineTo(W*0.06, H*0.72);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = 'rgba(201,168,76,0.9)';
+    ctx.font = '10px JetBrains Mono, monospace';
+    ctx.fillText('S_r × C(L_x)', W*0.02, H*0.58);
+    ctx.fillText('local model', W*0.02, H*0.63);
+  }
+
+  // Index ordering
+  if (phase > 0.6) {
+    ctx.fillStyle = 'rgba(90,96,112,0.6)';
+    ctx.font = '10px JetBrains Mono, monospace';
+    ctx.fillText('λ_p > λ_r > λ_q', W*0.75, H*0.92);
+  }
+}
+
+function animateStrat() {
+  if (stratAnim) cancelAnimationFrame(stratAnim);
+  stratPhase = 0;
+  function step() {
+    stratPhase = Math.min(1, stratPhase + 0.012);
+    drawStrat(stratPhase, false);
+    if (stratPhase < 1) stratAnim = requestAnimationFrame(step);
+  }
+  stratAnim = requestAnimationFrame(step);
+}
+
+function showCone() {
+  if (stratPhase < 1) {
+    stratPhase = 1;
+    drawStrat(1, false);
+    setTimeout(() => drawStrat(1, true), 300);
+  } else {
+    drawStrat(1, true);
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// BRIDGE CANVAS — side-by-side Morse vs CT loss surface
+// ══════════════════════════════════════════════════════════
+(function drawBridge() {
+  const canvas = document.getElementById('bridgeCanvas');
+  if (!canvas) return;
+  function setup() {
+    const dpr = window.devicePixelRatio||1;
+    const rect = canvas.getBoundingClientRect();
+    const W = rect.width, H = rect.height;
+    canvas.width = W*dpr; canvas.height = H*dpr;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+
+    // Left: Morse function 1D profile
+    const lW = W * 0.45;
+    ctx.fillStyle = '#0f1218';
+    ctx.fillRect(0, 0, lW, H);
+    ctx.strokeStyle = 'rgba(42,52,72,0.8)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(0, 0, lW, H);
+
+    ctx.fillStyle = 'rgba(90,96,112,0.6)';
+    ctx.font = '10px JetBrains Mono, monospace';
+    ctx.fillText('Morse function on M', 10, 18);
+
+    // Draw a Morse function curve
+    ctx.beginPath();
+    ctx.strokeStyle = '#6fa8dc';
+    ctx.lineWidth = 2;
+    for (let i = 0; i <= lW; i++) {
+      const x = i / lW;
+      const y = 0.2 + 0.6 * (0.4*Math.sin(x*Math.PI*3) + 0.3*Math.sin(x*Math.PI*5.5+0.4)
+                               + 0.15*Math.cos(x*Math.PI*2.2) + 0.15);
+      const py = H * y;
+      if (i===0) ctx.moveTo(i, py); else ctx.lineTo(i, py);
+    }
+    ctx.stroke();
+
+    // Mark critical points
+    const crits = [
+      {x:0.16, type:'max', col:'#d4635a'},
+      {x:0.35, type:'min', col:'#5aaa72'},
+      {x:0.56, type:'saddle', col:'#e8834a'},
+      {x:0.76, type:'min', col:'#5aaa72'},
+      {x:0.90, type:'max', col:'#d4635a'},
+    ];
+    crits.forEach(c => {
+      const x = c.x * lW;
+      const xn = c.x;
+      const y = 0.2 + 0.6 * (0.4*Math.sin(xn*Math.PI*3) + 0.3*Math.sin(xn*Math.PI*5.5+0.4)
+                               + 0.15*Math.cos(xn*Math.PI*2.2) + 0.15);
+      const py = H * y;
+      ctx.beginPath();
+      ctx.arc(x, py, 4, 0, Math.PI*2);
+      ctx.fillStyle = c.col;
+      ctx.fill();
+    });
+
+    // Gradient flow arrows
+    ctx.strokeStyle = 'rgba(201,168,76,0.5)';
+    ctx.lineWidth = 1;
+    for (let i = 3; i < 8; i++) {
+      const xn = i * 0.1;
+      const xn2 = xn + 0.01;
+      const y1 = 0.2+0.6*(0.4*Math.sin(xn*Math.PI*3)+0.3*Math.sin(xn*Math.PI*5.5+0.4)+0.15*Math.cos(xn*Math.PI*2.2)+0.15);
+      const y2 = 0.2+0.6*(0.4*Math.sin(xn2*Math.PI*3)+0.3*Math.sin(xn2*Math.PI*5.5+0.4)+0.15*Math.cos(xn2*Math.PI*2.2)+0.15);
+      const slope = (y2-y1)/0.01;
+      const dir = slope > 0 ? -1 : 1;
+      const ax = xn*lW, ay = H*y1;
+      ctx.beginPath();
+      ctx.moveTo(ax, ay); ctx.lineTo(ax+dir*14, ay);
+      ctx.stroke();
+    }
+
+    // Right: CT loss surface heatmap
+    const rX = W * 0.55;
+    const rW = W * 0.45;
+    ctx.fillStyle = '#0f1218';
+    ctx.fillRect(rX, 0, rW, H);
+    ctx.strokeStyle = 'rgba(42,52,72,0.8)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(rX, 0, rW, H);
+
+    ctx.fillStyle = 'rgba(90,96,112,0.6)';
+    ctx.font = '10px JetBrains Mono, monospace';
+    ctx.fillText('CT loss landscape L(θ₁,θ₂)', rX+10, 18);
+
+    // Draw 2D loss as gradient heatmap
+    const iw = rW|0, ih = H|0;
+    const img = ctx.createImageData(iw, ih);
+    for (let px=0; px<iw; px++) {
+      for (let py=0; py<ih; py++) {
+        const x = px/iw, y = py/ih;
+        const v = 0.3*Math.sin(x*Math.PI*4+0.5)*Math.cos(y*Math.PI*3)
+                + 0.2*Math.sin(x*Math.PI*7)*Math.sin(y*Math.PI*5+1)
+                + 0.1*Math.cos(x*Math.PI*2+y*Math.PI*3)
+                + 0.15*(x-0.4)*(x-0.4)*4 + 0.15*(y-0.5)*(y-0.5)*4;
+        const t = Math.max(0, Math.min(1, (v+0.5)/1.2));
+        const idx = (py*iw+px)*4;
+        img.data[idx]   = Math.round(15+t*60);
+        img.data[idx+1] = Math.round(20+t*80);
+        img.data[idx+2] = Math.round(40+t*130);
+        img.data[idx+3] = 255;
+      }
+    }
+    ctx.putImageData(img, rX, 0);
+
+    // Contour lines
+    ctx.strokeStyle = 'rgba(111,168,220,0.25)';
+    ctx.lineWidth = 1;
+    for (let level = 0; level < 5; level++) {
+      // Simple approximation: draw ellipses
+      const cx = rX + rW*(0.3+level*0.12);
+      const cy = H*(0.5+level*0.03);
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, rW*0.08+level*4, H*0.07+level*3, level*0.3, 0, Math.PI*2);
+      ctx.stroke();
+    }
+
+    // Mark local minima on CT loss
+    const ctMinima = [{x:0.28,y:0.55},{x:0.65,y:0.35},{x:0.78,y:0.72}];
+    ctMinima.forEach(m => {
+      ctx.beginPath();
+      ctx.arc(rX+m.x*rW, m.y*H, 4, 0, Math.PI*2);
+      ctx.fillStyle = '#5aaa72'; ctx.fill();
+    });
+
+    // Arrow pointing: "same structure"
+    ctx.strokeStyle = 'rgba(201,168,76,0.6)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4,3]);
+    ctx.beginPath();
+    ctx.moveTo(lW*0.95, H/2);
+    ctx.lineTo(rX+5, H/2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(201,168,76,0.9)';
+    ctx.font = '10px JetBrains Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('same', W/2, H/2-8);
+    ctx.fillText('structure?', W/2, H/2+6);
+    ctx.textAlign = 'left';
+  }
+  setup();
+  window.addEventListener('resize', () => setTimeout(setup,100));
+})();
+
+// ══════════════════════════════════════════════════════════
+// INR CANVAS — simulated training
+// ══════════════════════════════════════════════════════════
+let inrCtx, inrW, inrH, inrAnim=null, inrEpoch=0, inrRunning=false;
+
+(function initINR() {
+  const canvas = document.getElementById('inrCanvas');
+  function setup() {
+    const dpr = window.devicePixelRatio||1;
+    const rect = canvas.getBoundingClientRect();
+    inrW = rect.width; inrH = rect.height;
+    canvas.width = inrW*dpr; canvas.height = inrH*dpr;
+    inrCtx = canvas.getContext('2d');
+    inrCtx.scale(dpr, dpr);
+    drawINR(0);
+  }
+  setup();
+  window.addEventListener('resize', () => setTimeout(setup,100));
+})();
+
+function inrPhantom(x, y) {
+  // Shepp-Logan-like 2D phantom
+  const cx = x-0.5, cy = y-0.5;
+  let v = 0;
+  if (cx*cx/0.09 + cy*cy/0.16 < 1) v = 1.0;
+  if ((cx-0.1)*(cx-0.1)/0.02 + (cy+0.15)*(cy+0.15)/0.01 < 1) v = 1.8;
+  if ((cx+0.12)*(cx+0.12)/0.015 + (cy-0.1)*(cy-0.1)/0.025 < 1) v = 1.6;
+  if (cx*cx/0.004 + (cy-0.25)*(cy-0.25)/0.002 < 1) v = 2.0;
+  return v;
+}
+
+function drawINR(epoch) {
+  if (!inrCtx) return;
+  const ctx = inrCtx, W = inrW, H = inrH;
+  const gridH = H * 0.78;
+  const N = 80;
+
+  // Draw reconstruction
+  const img = ctx.createImageData(N, N);
+  const t = Math.min(1, epoch / 200);
+  const noise = Math.max(0, 1 - t * 1.1);
+
+  for (let px=0; px<N; px++) {
+    for (let py=0; py<N; py++) {
+      const x = px/N, y = py/N;
+      const gt = inrPhantom(x, y);
+      const recon = gt * t + (Math.random() * 2) * noise * 0.4;
+      const v = Math.min(1, Math.max(0, recon / 2.1));
+      const col = Math.round(v * 220);
+      const idx = (py*N+px)*4;
+      img.data[idx] = col; img.data[idx+1] = col;
+      img.data[idx+2] = Math.round(col * 0.8 + 30);
+      img.data[idx+3] = 255;
+    }
+  }
+
+  // Draw scaled
+  const offCanvas = document.createElement('canvas');
+  offCanvas.width = N; offCanvas.height = N;
+  const offCtx = offCanvas.getContext('2d');
+  offCtx.putImageData(img, 0, 0);
+
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#0a0c10';
+  ctx.fillRect(0, 0, W, H);
+
+  const imgW = W * 0.44;
+  // Ground truth
+  ctx.drawImage(offCanvas, 0, 0, imgW, gridH);
+  ctx.strokeStyle = 'rgba(90,170,114,0.5)';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(0, 0, imgW, gridH);
+  ctx.fillStyle = 'rgba(90,170,114,0.7)';
+  ctx.font = '10px JetBrains Mono, monospace';
+  ctx.fillText('Target phantom', 4, gridH + 14);
+
+  // Reconstruction (same with controlled noise)
+  ctx.drawImage(offCanvas, W*0.56, 0, imgW, gridH);
+  ctx.strokeStyle = `rgba(111,168,220,0.5)`;
+  ctx.lineWidth = 1;
+  ctx.strokeRect(W*0.56, 0, imgW, gridH);
+  ctx.fillStyle = 'rgba(111,168,220,0.7)';
+  ctx.fillText('INR reconstruction', W*0.56+4, gridH + 14);
+
+  // Epoch + loss
+  const loss = Math.exp(-epoch * 0.025) * 0.8 + 0.02;
+  ctx.fillStyle = 'rgba(201,168,76,0.8)';
+  ctx.font = '11px JetBrains Mono, monospace';
+  ctx.fillText(`epoch ${epoch}   loss = ${loss.toFixed(4)}`, 4, H - 8);
+
+  // Loss curve strip
+  const stripY = gridH + 22, stripH = H - stripY - 24;
+  if (stripH > 8) {
+    ctx.strokeStyle = 'rgba(201,168,76,0.5)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let e=0; e<=epoch && e < W; e++) {
+      const l = Math.exp(-e*0.025)*0.8+0.02;
+      const px = e / Math.max(1,epoch) * (W-20) + 10;
+      const py = stripY + stripH * (1 - l/0.82);
+      if (e===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+  }
+}
+
+function startINR() {
+  if (inrRunning) return;
+  inrRunning = true;
+  function step() {
+    if (!inrRunning) return;
+    inrEpoch++;
+    drawINR(inrEpoch);
+    if (inrEpoch < 300) inrAnim = requestAnimationFrame(step);
+    else inrRunning = false;
+  }
+  inrAnim = requestAnimationFrame(step);
+}
+
+function stopINR() {
+  inrRunning = false;
+  if (inrAnim) cancelAnimationFrame(inrAnim);
+}
+
+function resetINR() {
+  stopINR();
+  inrEpoch = 0;
+  drawINR(0);
+}
+
+// Trigger initial draws on load with delay to let layout settle
+setTimeout(() => {
+  drawTraj(0);
+  drawStrat(0, false);
+  drawMorse();
+}, 400);
+</script>
+</body>
+</html>
