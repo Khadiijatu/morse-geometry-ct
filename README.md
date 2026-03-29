@@ -64,6 +64,4 @@ python3 -m http.server 8000
 
 ## Author
 
-**Khadidiatou Cissé**  
-MSc Mathematics, Aix-Marseille University
-[khadidiatoucisse4@hotmail.com](mailto:khadidiatoucisse4@hotmail.com)
+**Khadidiatou Cissé**
