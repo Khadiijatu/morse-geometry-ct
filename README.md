@@ -13,15 +13,15 @@ Live site: **https://khadiijatu.github.io/morse-geometry-ct/**
 This is a self-contained, interactive visual essay exploring the conceptual and
 mathematical bridge between:
 
-- **Morse-Smale gradient flow theory** — specifically, the stratified structure of
+- **Morse-Smale gradient flow theory**, specifically, the stratified structure of
   stable and unstable manifold closures, as studied in the author's MSc thesis
   (Aix-Marseille University, 2020, supervisor: Prof. D. J. A. Trotman)
-- **Neural CT image reconstruction** — specifically, Implicit Neural Representations
+- **Neural CT image reconstruction**, specifically, Implicit Neural Representations
   and the geometry of their optimization landscapes
 
 The essay is a companion to two papers in preparation:
 1. *Conical Models and Whitney Regularity for Stable Manifold Closures in Morse-Smale
-   Gradient Flows: A Unified Proof* (arXiv preprint, math.DG / cs.CV)
+   Gradient Flows: A Unified Proof*
 2. *Geometric Optimization in Differentiable Rendering: A Morse-Theoretic Perspective*
 
 ---
@@ -30,13 +30,13 @@ The essay is a companion to two papers in preparation:
 
 | Section | Content |
 |---------|---------|
-| **01 — The Morse Landscape** | Interactive: place critical points, watch gradient flow organize |
-| **02 — Broken Trajectories** | Animated compactification of moduli spaces |
-| **03 — Stratified Closures** | Whitney stratification diagram, animated |
-| **04 — The Conceptual Bridge** | CT reconstruction as gradient flow — side-by-side comparison |
-| **05 — Neural Representations** | What INRs are; live simulated training animation |
-| **06 — The Open Question** | Precise mathematical statement of the research programme |
-| **07 — About & References** | Context, author, bibliography |
+| **01 - The Morse Landscape** | Interactive: place critical points, watch gradient flow organize |
+| **02 - Broken Trajectories** | Animated compactification of moduli spaces |
+| **03 - Stratified Closures** | Whitney stratification diagram, animated |
+| **04 - The Conceptual Bridge** | CT reconstruction as gradient flow — side-by-side comparison |
+| **05 - Neural Representations** | What INRs are; live simulated training animation |
+| **06 - The Open Question** | Precise mathematical statement of the research programme |
+| **07 - About & References** | Context, author, bibliography |
 
 ---
 
@@ -46,7 +46,7 @@ The essay is a companion to two papers in preparation:
 - All diagrams and animations are pure HTML5 Canvas + CSS
 - MathJax renders all mathematical notation
 - Fully responsive (mobile/tablet/desktop)
-- No build step required — `index.html` is the entire site
+- No build step required: `index.html` is the entire site
 
 ---
 
@@ -64,6 +64,4 @@ python3 -m http.server 8000
 
 ## Author
 
-**Khadidiatou Cissé**  
-MSc Mathematics, Aix-Marseille University
-[khadidiatoucisse4@hotmail.com](mailto:khadidiatoucisse4@hotmail.com)
+**Khadidiatou Cissé**
