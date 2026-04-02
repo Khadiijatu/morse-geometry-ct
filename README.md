@@ -34,8 +34,8 @@ The essay is a companion to two manuscripts in preparation:
 | **02 - Connecting and Broken Trajectories** | Animated compactification of moduli spaces |
 | **03 - The Stratified Closure** | Whitney stratification diagram, animated |
 | **04 - Complete example: Height function on torus** | Explicit computation |
-| **05 - The Bridge to CT reconstruction** | CT reconstruction as gradient flow — side-by-side comparison |
-| **06 - SIREN loss landscapes: Morse–Bott structure** | Numerical experiment / Morse-Bott structure|
+| **05 - The Bridge to CT reconstruction** | CT reconstruction as gradient flow, side-by-side comparison |
+| **06 - SIREN loss landscapes: Morse–Bott structure** | Numerical experiment, Morse-Bott structure|
 | **07 - Volume growth and Whitney stratification** | Computable certificate applicable to neural network parameter spaces |
 | **08 - Research programme** | Four open problems |
 | **09 - About & References** | Research context, bibliography |
