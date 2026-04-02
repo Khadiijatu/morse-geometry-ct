@@ -19,7 +19,7 @@ mathematical bridge between:
 - **Neural CT image reconstruction**, specifically, Implicit Neural Representations
   and the geometry of their optimization landscapes
 
-The essay is a companion to two papers in preparation:
+The essay is a companion to two manuscripts in preparation:
 1. *Conical Models and Whitney Regularity for Stable Manifold Closures in Morse-Smale
    Gradient Flows: A Unified Proof*
 2. *Geometric Optimization in Differentiable Rendering: A Morse-Theoretic Perspective*
@@ -31,19 +31,21 @@ The essay is a companion to two papers in preparation:
 | Section | Content |
 |---------|---------|
 | **01 - The Morse Landscape** | Interactive: place critical points, watch gradient flow organize |
-| **02 - Broken Trajectories** | Animated compactification of moduli spaces |
-| **03 - Stratified Closures** | Whitney stratification diagram, animated |
-| **04 - The Conceptual Bridge** | CT reconstruction as gradient flow — side-by-side comparison |
-| **05 - Neural Representations** | What INRs are; live simulated training animation |
-| **06 - The Open Question** | Precise mathematical statement of the research programme |
-| **07 - About & References** | Context, author, bibliography |
+| **02 - Connecting and Broken Trajectories** | Animated compactification of moduli spaces |
+| **03 - The Stratified Closure** | Whitney stratification diagram, animated |
+| **04 - Complete example: Height function on torus** | Explicit computation |
+| **05 - The Bridge to CT reconstruction** | CT reconstruction as gradient flow — side-by-side comparison |
+| **06 - SIREN loss landscapes: Morse–Bott structure** | Numerical experiment / Morse-Bott structure|
+| **07 - Volume growth and Whitney stratification** | Computable certificate applicable to neural network parameter spaces |
+| **08 - Research programme** | Four open problems |
+| **09 - About & References** | Research context, bibliography |
 
 ---
 
 ## Technical notes
 
 - **Zero dependencies** except Google Fonts and MathJax (both CDN, no install needed)
-- All diagrams and animations are pure HTML5 Canvas + CSS
+- All diagrams and animations are pure HTML5 Canvas + JS
 - MathJax renders all mathematical notation
 - Fully responsive (mobile/tablet/desktop)
 - No build step required: `index.html` is the entire site
@@ -55,13 +57,11 @@ The essay is a companion to two papers in preparation:
 ```bash
 git clone https://github.com/khadiijatu/morse-geometry-ct.git
 cd morse-geometry-ct
-# Open index.html in any modern browser, or:
-python3 -m http.server 8000
-# Then visit http://localhost:8000
+# Open index.html in any modern browser
 ```
 
 ---
 
 ## Author
 
-**Khadidiatou Cissé**
+**K. Cissé**
