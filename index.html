@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>From Broken Trajectories to Broken Pixels — K. Cissé</title>
+<title>From Broken Trajectories to Broken Pixels - K. Cissé</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet"/>
@@ -193,6 +193,10 @@ footer{padding:36px clamp(24px,8vw,120px);font-family:var(--mono);font-size:.68r
         i.e.\ the Hessian $\mathrm{Hess}_p f$ is invertible at each
         $p\in\mathrm{Crit}(f)$.
       </p>
+      <p>
+        Throughout the geometric sections below, we assume in addition that the gradient flow is
+        <em>Morse&ndash;Smale</em>, so the stable and unstable manifolds of critical points meet transversely.
+      </p>
       <div class="def-box">
         <div class="lbl">Morse Lemma</div>
         <p style="margin:0">
@@ -213,8 +217,7 @@ footer{padding:36px clamp(24px,8vw,120px);font-family:var(--mono);font-size:.68r
         descends $f$ strictly:
         $\tfrac{d}{dt}f(\phi_t(x))=-\|\nabla f(\phi_t(x))\|^2\le0,$
         with equality only at critical points.
-        Every non-stationary orbit converges forward to a unique minimum-index
-        critical point.
+        Every non-stationary orbit converges forward to a critical point of $f$.
       </p>
       <p>
         The Euler characteristic check provides a global constraint:
@@ -229,7 +232,7 @@ footer{padding:36px clamp(24px,8vw,120px);font-family:var(--mono);font-size:.68r
       </div>
       <p class="canvas-cap" style="margin-top:12px;">
         Click on the canvas to place critical points.
-        Flow lines will be approximated from each saddle downward.
+        Flow lines are numerically approximated from saddle points along their unstable directions.
       </p>
     </div>
     <div class="reveal">
@@ -286,19 +289,17 @@ footer{padding:36px clamp(24px,8vw,120px);font-family:var(--mono);font-size:.68r
         </p>
       </div>
       <p>
-        Proof sketch: any sequence of trajectories is equi-Lipschitz
-        (bounded by $\max_M\|\nabla f\|$) and uniformly bounded on
-        compact time intervals.
-        Arzelà–Ascoli yields convergence on compact intervals;
-        the global energy bound
-        $\int_{-\infty}^\infty\|\nabla f\|^2\,dt\le\max f-\min f$
-        limits the number of breaks to at most $\mathrm{ind}(p)-\mathrm{ind}(q)-1$.
+        Standard Morse-theoretic compactness combines time-shift normalisation,
+        Arzelà&ndash;Ascoli on compact intervals, and the energy identity
+        $$\int_{-\infty}^{\infty}\|\nabla f(\gamma(t))\|^2\,dt=f(\gamma(-\infty))-f(\gamma(+\infty)).$$
+        The essential point is that bounded energy prevents infinitely many breaks,
+        while the translation symmetry is removed by fixing a transverse slice.
       </p>
       <p>
         Breaking is not pathological. Near the break parameter, the
         moduli space is locally homeomorphic to a <em>cone</em> with
         cone parameter measuring the time spent near $r$.
-        This conical structure is the geometric seed of Theorem A.
+        This conical behaviour is a geometric heuristic for the local models discussed in §3.
       </p>
       <div class="thm-box">
         <div class="lbl">Energy bound (proved in paper, App. C)</div>
@@ -323,29 +324,27 @@ footer{padding:36px clamp(24px,8vw,120px);font-family:var(--mono);font-size:.68r
   <div class="section--split">
     <div class="reveal">
       <h3>Main results</h3>
-      <h2>Four theorems, one unified picture</h2>
+      <h2>Four structural claims, one geometric picture</h2>
       <p>The stable manifold closure decomposes as
       $$\overline{W^s(p)}=\bigsqcup_{\substack{q\in\mathrm{Crit}(f)\\\mathrm{ind}(q)\le\mathrm{ind}(p)}}S_q,\quad S_q:=W^s(q)\cap\overline{W^s(p)}.$$
       Each stratum $S_q$ is a smooth submanifold of dimension $n-\mathrm{ind}(q)$.</p>
-      <div class="thm-box">
-        <div class="lbl">Theorem A: Conical models</div>
-        <p style="margin:0">For every $x\in S_q$ there is a neighbourhood $U$ and a stratum-preserving homeomorphism
-        $$U\cap\overline{W^s(p)}\cong(S_q\cap U)\times C(L_x),$$
-        where the link $L_x\cong\bigsqcup\,\widehat{\mathcal{M}}(q,r_1)\times\cdots\times\widehat{\mathcal{M}}(r_k,p)$.</p>
-      </div>
-      <div class="thm-box">
-        <div class="lbl">Theorem B: Whitney regularity</div>
-        <p style="margin:0">Whitney $(a)$ and $(b)$ hold for every adjacent pair $(S_q,S_r)$. In graph coordinates $S_q=\{u=h(s)\}$ over $S_r=\{u=0\}$:
-        $$h(0)=0,\quad Dh(0)=0,\quad \|h(s)\|\le C\|s\|^2.$$
-        The quadratic flatness gives secant $u$-component $\to0$.</p>
+      <div class="new-box">
+        <div class="lbl">Working claim A: local conical models</div>
+        <p style="margin:0">A natural candidate, suggested by broken-trajectory compactification, is a local model of the form
+        $$U\cap\overline{W^s(p)}\approx (S_q\cap U)\times C(L_x).$$
+        The website presents this as geometric guidance; the manuscript now treats the precise topological statement more cautiously.</p>
       </div>
       <div class="new-box">
-        <div class="lbl">Theorem C: Trotman conditions, direct proof</div>
-        <p style="margin:0">Conditions $(a_s)$ and $(b_s)$ proved directly from Morse–Smale geometry. The same quadratic estimate shows $C^1$ retraction fibres are transverse to higher strata in a full neighbourhood. <strong>Corollary:</strong> transversality to $\{S_q\}$ is open in the $C^1$ Whitney topology.</p>
+        <div class="lbl">Working claim B: Whitney-type regularity</div>
+        <p style="margin:0">The manuscript investigates whether adjacent strata satisfy Whitney-type conditions. The displayed quadratic estimate should be read as a target local bound to be proved, not as a completed theorem on this page.</p>
       </div>
-      <div class="thm-box">
-        <div class="lbl">Theorem D: Mather control data</div>
-        <p style="margin:0">Canonical control data: $\pi_{S_q}(y)=\lim_{t\to+\infty}\phi_t(y)$ and $\rho_{S_q}(y)=\int_0^\infty\|\nabla f(\phi_t(y))\|^2\,dt$. Compatibility follows from the additive flow structure.</p>
+      <div class="new-box">
+        <div class="lbl">Working claim C: transversality package</div>
+        <p style="margin:0">Trotman-style openness of transversality is part of the longer-term programme. At present, the rigorous core established in the manuscript is the closure-by-broken-trajectories picture, from which these stronger claims are motivated.</p>
+      </div>
+      <div class="new-box">
+        <div class="lbl">Working claim D: control data</div>
+        <p style="margin:0">The flow suggests natural projection and energy functions, but full Mather control data require additional verification. They are best viewed here as a structured proposal rather than a finished theorem.</p>
       </div>
     </div>
     <div class="reveal">
@@ -358,14 +357,14 @@ footer{padding:36px clamp(24px,8vw,120px);font-family:var(--mono);font-size:.68r
         <button class="btn" onclick="showConeStrat()">Show conical model</button>
         <button class="btn danger" onclick="resetStrat()">Reset</button>
       </div>
-      <p class="canvas-cap">Three strata of $\overline{W^s(p)}$. Dashed: broken trajectory. Gold: conical local model $S_r\times C(L_x)$ at a boundary point.</p>
+      <p class="canvas-cap">Three strata of $\overline{W^s(p)}$. Dashed: broken trajectory. Gold: a heuristic conical local model near a boundary point.</p>
     </div>
   </div>
 </section>
 
 <!-- §4 TORUS -->
 <section id="torus" class="section">
-  <div class="secnum">§ 4 / 8 - COMPLETE EXAMPLE: HEIGHT FUNCTION ON 𝕋²</div>
+  <div class="secnum">§ 4 / 8 - COMPLETE EXAMPLE: A MORSE FUNCTION ON $\mathbb{T}^2$</div>
   <div class="section--split">
     <div class="reveal">
       <div class="canvas-wrap" style="aspect-ratio:1;">
@@ -377,32 +376,52 @@ footer{padding:36px clamp(24px,8vw,120px);font-family:var(--mono);font-size:.68r
         <button class="btn" onclick="showTorusCone()">Show cone at q</button>
         <button class="btn danger" onclick="resetTorus()">Reset</button>
       </div>
-      <p class="canvas-cap">Navy=$p$ (max,ind=2) · Green=$a,b$ (saddles,ind=1) · Orange=$q$ (min,ind=0). Green arcs: strata $S_a,S_b$. Gold: figure-X at $q$.</p>
+      <p class="canvas-cap">Navy=$p$ (index $2$) · Green=$a,b$ (index $1$) · Orange=$q$ (index $0$). The drawing visualises the closure of the unstable manifold of $p$ for the negative gradient flow, equivalently the stable picture for the time-reversed flow.</p>
     </div>
     <div class="reveal">
       <h3>Explicit computation</h3>
-      <h2>Every moduli space, every stratum</h2>
-      <p>Embed $\mathbb{T}^2\subset\mathbb{R}^3$ with radii $\rho=2$, $r=1$. Height function $f(\theta,\phi)=\sin\phi+\varepsilon\cos\theta$.</p>
+      <h2>A fully controlled model on the flat torus</h2>
+      <p>Let $\mathbb{T}^2=(\mathbb{R}/2\pi\mathbb{Z})^2$ with the flat metric $d\theta^2+d\phi^2$, and fix $\varepsilon\in(0,1)$. Consider
+      $$f(\theta,\phi)=\varepsilon\cos\theta+\sin\phi.$$ 
+      Its negative gradient flow is the decoupled system
+      $$\dot\theta=\varepsilon\sin\theta,\qquad \dot\phi=-\cos\phi.$$</p>
       <div class="def-box">
-        <div class="lbl">Four critical points (Euler: 1−2+1=0 ✓)</div>
-        <p style="margin:0;font-size:.9em;line-height:2.1;">
-          $p=(0,\pi/2)$: max, $\mathrm{ind}=2$<br/>
-          $a=(\pi,\pi/2)$: saddle, $\mathrm{ind}=1$<br/>
-          $b=(0,3\pi/2)$: saddle, $\mathrm{ind}=1$<br/>
-          $q=(\pi,3\pi/2)$: min, $\mathrm{ind}=0$
+        <div class="lbl">Critical points and Morse indices</div>
+        <p style="margin:0;font-size:.9em;line-height:2.0;">
+          The critical points are exactly the solutions of $\sin\theta=0$ and $\cos\phi=0$, namely
+          $$p=(0,\pi/2),\quad a=(\pi,\pi/2),\quad b=(0,3\pi/2),\quad q=(\pi,3\pi/2).$$
+          Since
+          $$\mathrm{Hess}\,f(\theta,\phi)=\begin{pmatrix}-\varepsilon\cos\theta&0\\[2pt]0&-\sin\phi\end{pmatrix},$$
+          we get
+          $$\mathrm{ind}(p)=2,\qquad \mathrm{ind}(a)=\mathrm{ind}(b)=1,\qquad \mathrm{ind}(q)=0,$$
+          so $f$ is Morse and $1-2+1=0=\chi(\mathbb{T}^2)$.
         </p>
       </div>
       <div class="def-box">
-        <div class="lbl">All moduli spaces</div>
-        <p style="margin:0;font-size:.9em;line-height:2.1;">
-          $\widehat{\mathcal{M}}(p,a)\cong\widehat{\mathcal{M}}(p,b)\cong\{*\}$<br/>
-          $\widehat{\mathcal{M}}(a,q)\cong\widehat{\mathcal{M}}(b,q)\cong\{*\}$<br/>
-          $\overline{\widehat{\mathcal{M}}(p,q)}\cong[0,1]$, endpoints = broken trajectories
+        <div class="lbl">The connecting trajectories</div>
+        <p style="margin:0;font-size:.9em;line-height:2.0;">
+          Because the system decouples, the coordinate circles $\{\phi=\pi/2\}$, $\{\theta=0\}$, $\{\theta=\pi\}$ and $\{\phi=3\pi/2\}$ are invariant. Along them one obtains exactly four one-step trajectories:
+          $$p\to a\text{ on }\{\phi=\pi/2\},\qquad p\to b\text{ on }\{\theta=0\},$$
+          $$a\to q\text{ on }\{\theta=\pi\},\qquad b\to q\text{ on }\{\phi=3\pi/2\}.$$
+          Hence
+          $$\widehat{\mathcal{M}}(p,a)\cong\widehat{\mathcal{M}}(p,b)\cong\widehat{\mathcal{M}}(a,q)\cong\widehat{\mathcal{M}}(b,q)\cong\{*\}.$$
         </p>
       </div>
       <div class="new-box">
-        <div class="lbl">Conical model at q — figure-X</div>
-        <p style="margin:0;font-size:.9em;">Link $L_q=\{*_1,*_2\}$ (two points). Cone $C(L_q)$ = two rays from $q$: a figure-X. Whitney $(b)$ holds trivially since $T_q\{q\}=\{0\}\subset$ any subspace. Stratification: $\overline{W^s(p)}=\{p\}\cup S_a\cup S_b\cup\{q\}$.</p>
+        <div class="lbl">The $p\to q$ moduli space and its compactification</div>
+        <p style="margin:0;font-size:.9em;line-height:2.0;">
+          Every trajectory from $p$ to $q$ meets the transverse circle $\Sigma=\{\phi=\pi\}$ exactly once, and it meets it at a unique point $(\theta_*,\pi)$ with $\theta_*\in(0,\pi)$. This gives a bijection
+          $$\widehat{\mathcal{M}}(p,q)\longrightarrow(0,\pi),\qquad [\gamma]\longmapsto \theta_*(\gamma).$$
+          As $\theta_*\to0$, the trajectory spends longer near $b$ and converges to the broken orbit $p\to b\to q$; as $\theta_*\to\pi$, it converges to $p\to a\to q$. Therefore
+          $$\overline{\widehat{\mathcal{M}}(p,q)}\cong[0,\pi]\cong[0,1],$$
+          with endpoints corresponding exactly to the two broken trajectories.
+        </p>
+      </div>
+      <div class="new-box">
+        <div class="lbl">What the picture proves locally at $q$</div>
+        <p style="margin:0;font-size:.9em;line-height:2.0;">
+          Near $q$, the closure of the unstable manifold of $p$ consists of the open two-dimensional region of direct $p\to q$ trajectories together with the two one-dimensional incoming branches through $a$ and $b$. On the compactified moduli side, the link of the endpoint corresponding to $q$ has two points, so the local compactification picture is a cone on two points, i.e. two rays meeting at one vertex. This is the precise source of the figure-X drawn in the animation.
+        </p>
       </div>
     </div>
   </div>
@@ -419,11 +438,11 @@ footer{padding:36px clamp(24px,8vw,120px);font-family:var(--mono);font-size:.68r
     <div class="two-col">
       <div class="thm-box">
         <div class="lbl">Morse Theory Side</div>
-        <p style="margin:0;font-size:.88em;line-height:2.1;">Compact manifold $M$<br/>Morse function $f:M\to\mathbb{R}$<br/>Flow: $\dot x=-\nabla f(x)$<br/>Stable manifolds $W^s(p)\subset M$<br/>Closures: Whitney stratified ✓ (Thms A–D)</p>
+        <p style="margin:0;font-size:.88em;line-height:2.1;">Compact manifold $M$<br/>Morse function $f:M\to\mathbb{R}$<br/>Flow: $\dot x=-\nabla f(x)$<br/>Stable/unstable manifolds inside $M$<br/>Closure by broken trajectories established; stronger stratified structure remains under investigation</p>
       </div>
       <div style="border-left:3px solid var(--orange);padding:18px 22px;background:rgba(232,131,74,.06);border-radius:0 4px 4px 0;">
         <div style="font-family:var(--mono);font-size:.67rem;color:var(--orange);letter-spacing:.13em;text-transform:uppercase;margin-bottom:.55em;">CT Reconstruction Side</div>
-        <p style="margin:0;font-size:.88em;line-height:2.1;">Parameter space $\Theta=\mathbb{R}^N$<br/>Loss $\mathcal{L}_\lambda(\theta)$<br/>Flow: $\dot\theta=-\nabla\mathcal{L}_\lambda$<br/>Basins of attraction<br/>Closures: open problem — see §8</p>
+        <p style="margin:0;font-size:.88em;line-height:2.1;">Parameter space $\Theta=\mathbb{R}^N$<br/>Loss $\mathcal{L}_\lambda(\theta)$<br/>Flow: $\dot\theta=-\nabla\mathcal{L}_\lambda$<br/>Basins of attraction<br/>Closures: open problem, see §8</p>
       </div>
     </div>
   </div>
@@ -431,11 +450,11 @@ footer{padding:36px clamp(24px,8vw,120px);font-family:var(--mono);font-size:.68r
 
 <!-- §6 SIREN -->
 <section id="siren" class="section">
-  <div class="secnum">§ 6 / 8 - SIREN LANDSCAPES: MORSE–BOTT STRUCTURE</div>
+  <div class="secnum">§ 6 / 8 - SIREN LANDSCAPES: A MORSE–BOTT HYPOTHESIS</div>
   <div class="section--split">
     <div class="reveal">
       <h3>New direction</h3>
-      <h2>Why Morse–Bott, not Morse</h2>
+      <h2>Why a Morse–Bott viewpoint is plausible</h2>
       <p>A <strong>SIREN-1</strong> network is $f_\theta(x)=W_2\sin(\omega_0(W_1x+b_1))+b_2$. The sign-flip group $G\cong(\mathbb{Z}/2\mathbb{Z})^d$ acts on $\mathrm{Crit}(\mathcal{L}_\lambda)$, creating discrete families of critical points.</p>
       <div class="thm-box">
         <div class="lbl">Proposition 6.1</div>
@@ -451,7 +470,8 @@ footer{padding:36px clamp(24px,8vw,120px);font-family:var(--mono);font-size:.68r
           <tr class="sad-row"><td>3</td><td>0.03186</td><td>1.0e-6</td><td>−0.00379</td><td>saddle</td></tr>
           <tr class="min-row"><td>4</td><td>0.03020</td><td>2.4e-4</td><td>+0.06812</td><td>local min</td></tr>
         </table>
-        <p style="margin:.7em 0 0;font-size:.78em;color:var(--text2);">3/5 saddles · 2/5 minima · Paired eigenvalues reveal $(\mathbb{Z}/2\mathbb{Z})^6$ action · Tikhonov bound 2λ=0.10 not met</p>
+        <p style="margin:.7em 0 0;font-size:.78em;color:var(--text2);">3/5 saddles · 2/5 minima · Paired eigenvalues suggest a $(\mathbb{Z}/2\mathbb{Z})^6$ symmetry pattern · Tikhonov bound $2\lambda=0.10$ is shown for reference</p>
+        <p style="margin:.7em 0 0;font-size:.78em;color:var(--text2);">Gradients and Hessians were computed by automatic differentiation; runs were classified numerically using the reported values of $\|\nabla\mathcal{L}\|$ and the smallest Hessian eigenvalue.</p>
       </div>
       <div class="open-box">
         <div class="lbl">Refined Morse–Bott Conjecture</div>
@@ -488,9 +508,9 @@ footer{padding:36px clamp(24px,8vw,120px);font-family:var(--mono);font-size:.68r
     <canvas id="vgtCanvas" style="width:100%;height:190px;border:1px solid var(--border);border-radius:4px;background:var(--bg2);margin:1.8em 0;"></canvas>
     <div class="new-box">
       <div class="lbl">Theorem 7.1: Volume growth of Morse–Smale stratification</div>
-      <p style="margin:0">At an interior point of $S_q$: $d_{\mathrm{loc}}=n-\mathrm{ind}(q)$. At a boundary point $y\in S_r\subset\overline{S_q}$: mixed polynomial growth
-      $$\mathrm{VGT}_y(r)\sim c_1 r^{n-\mathrm{ind}(r)}+c_2 r^{n-\mathrm{ind}(q)}\quad(r\to0),$$
-      with $d_{\mathrm{loc}}(y)=n-\mathrm{ind}(r)$ (lower stratum dominates at small scale).</p>
+      <p style="margin:0">If the local compactification picture from §3 is correct, then one expects the leading small-scale exponent at an interior point of $S_q$ to be $n-\mathrm{ind}(q)$. At a boundary point $y\in S_r\subset\overline{S_q}$ one is naturally led to a mixed asymptotic model
+      $$\mathrm{VGT}_y(r)\approx c_1 r^{n-\mathrm{ind}(r)}+c_2 r^{n-\mathrm{ind}(q)}\quad(r\to0),$$
+      where the lower-dimensional stratum contributes the dominant exponent. This section should therefore be read as a research direction, not as a finished theorem.</p>
     </div>
     <p>This closes the theoretical gap noted by Curry et al. (2025): <em>"no method currently exists for characterizing precisely the stratified space structure of a noisy point-cloud sample in terms of volume-growth laws."</em> If the stratification arises from a Morse-type gradient flow, the volume growth exponents are exactly the Morse indices.</p>
     <div class="open-box">
