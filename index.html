@@ -363,9 +363,12 @@ footer{padding:36px clamp(24px,8vw,120px);font-family:var(--mono);font-size:.68r
 </section>
 
 <!-- §4 TORUS -->
+<!-- §4 TORUS -->
 <section id="torus" class="section">
   <div class="secnum">§ 4 / 8 - COMPLETE EXAMPLE: A MORSE FUNCTION ON $\mathbb{T}^2$</div>
-  <div class="section--split">
+
+  <!-- TOP ROW: canvas left, intro right -->
+  <div class="section--split" style="align-items:start;margin-bottom:2.4em;">
     <div class="reveal">
       <div class="canvas-wrap" style="aspect-ratio:1;">
         <canvas id="torusCanvas" style="width:100%;height:100%;"></canvas>
@@ -382,50 +385,53 @@ footer{padding:36px clamp(24px,8vw,120px);font-family:var(--mono);font-size:.68r
       <h3>Explicit computation</h3>
       <h2>A fully controlled model on the flat torus</h2>
       <p>Let $\mathbb{T}^2=(\mathbb{R}/2\pi\mathbb{Z})^2$ with the flat metric $d\theta^2+d\phi^2$, and fix $\varepsilon\in(0,1)$. Consider
-      $$f(\theta,\phi)=\varepsilon\cos\theta+\sin\phi.$$ 
+      $$f(\theta,\phi)=\varepsilon\cos\theta+\sin\phi.$$
       Its negative gradient flow is the decoupled system
-      $$\dot\theta=\varepsilon\sin\theta,\qquad \dot\phi=-\cos\phi.$$</p>
-      <div class="def-box">
-        <div class="lbl">Critical points and Morse indices</div>
-        <p style="margin:0;font-size:.9em;line-height:2.0;">
-          The critical points are exactly the solutions of $\sin\theta=0$ and $\cos\phi=0$, namely
-          $$p=(0,\pi/2),\quad a=(\pi,\pi/2),\quad b=(0,3\pi/2),\quad q=(\pi,3\pi/2).$$
-          Since
-          $$\mathrm{Hess}\,f(\theta,\phi)=\begin{pmatrix}-\varepsilon\cos\theta&0\\[2pt]0&-\sin\phi\end{pmatrix},$$
-          we get
-          $$\mathrm{ind}(p)=2,\qquad \mathrm{ind}(a)=\mathrm{ind}(b)=1,\qquad \mathrm{ind}(q)=0,$$
-          so $f$ is Morse and $1-2+1=0=\chi(\mathbb{T}^2)$.
-        </p>
-      </div>
-      <div class="def-box">
-        <div class="lbl">The connecting trajectories</div>
-        <p style="margin:0;font-size:.9em;line-height:2.0;">
-          Because the system decouples, the coordinate circles $\{\phi=\pi/2\}$, $\{\theta=0\}$, $\{\theta=\pi\}$ and $\{\phi=3\pi/2\}$ are invariant. Along them one obtains exactly four one-step trajectories:
-          $$p\to a\text{ on }\{\phi=\pi/2\},\qquad p\to b\text{ on }\{\theta=0\},$$
-          $$a\to q\text{ on }\{\theta=\pi\},\qquad b\to q\text{ on }\{\phi=3\pi/2\}.$$
-          Hence
-          $$\widehat{\mathcal{M}}(p,a)\cong\widehat{\mathcal{M}}(p,b)\cong\widehat{\mathcal{M}}(a,q)\cong\widehat{\mathcal{M}}(b,q)\cong\{*\}.$$
-        </p>
-      </div>
-      <div class="new-box">
-        <div class="lbl">The $p\to q$ moduli space and its compactification</div>
-        <p style="margin:0;font-size:.9em;line-height:2.0;">
-          Every trajectory from $p$ to $q$ meets the transverse circle $\Sigma=\{\phi=\pi\}$ exactly once, and it meets it at a unique point $(\theta_*,\pi)$ with $\theta_*\in(0,\pi)$. This gives a bijection
-          $$\widehat{\mathcal{M}}(p,q)\longrightarrow(0,\pi),\qquad [\gamma]\longmapsto \theta_*(\gamma).$$
-          As $\theta_*\to0$, the trajectory spends longer near $b$ and converges to the broken orbit $p\to b\to q$; as $\theta_*\to\pi$, it converges to $p\to a\to q$. Therefore
-          $$\overline{\widehat{\mathcal{M}}(p,q)}\cong[0,\pi]\cong[0,1],$$
-          with endpoints corresponding exactly to the two broken trajectories.
-        </p>
-      </div>
-      <div class="new-box">
-        <div class="lbl">What the picture proves locally at $q$</div>
-        <p style="margin:0;font-size:.9em;line-height:2.0;">
-          Near $q$, the closure of the unstable manifold of $p$ consists of the open two-dimensional region of direct $p\to q$ trajectories together with the two one-dimensional incoming branches through $a$ and $b$. On the compactified moduli side, the link of the endpoint corresponding to $q$ has two points, so the local compactification picture is a cone on two points, i.e. two rays meeting at one vertex. This is the precise source of the figure-X drawn in the animation.
-        </p>
-      </div>
+      $$\dot\theta=\varepsilon\sin\theta,\qquad \dot\phi=-\cos\phi.$$
+      Because the system decouples, four coordinate circles are flow-invariant, and all connecting trajectories can be read off directly.</p>
     </div>
   </div>
+
+  <!-- BOTTOM: four computation blocks in a 2×2 grid -->
+  <div class="two-col reveal">
+    <div class="def-box">
+      <div class="lbl">Critical points and Morse indices</div>
+      <p style="margin:0;font-size:.9em;line-height:2.0;">
+        The critical points are exactly the solutions of $\sin\theta=0$ and $\cos\phi=0$:
+        $$p=(0,\pi/2),\quad a=(\pi,\pi/2),\quad b=(0,3\pi/2),\quad q=(\pi,3\pi/2).$$
+        Since
+        $$\mathrm{Hess}\,f=\begin{pmatrix}-\varepsilon\cos\theta&0\\[2pt]0&-\sin\phi\end{pmatrix},$$
+        we get $\mathrm{ind}(p)=2$, $\mathrm{ind}(a)=\mathrm{ind}(b)=1$, $\mathrm{ind}(q)=0$, and $1-2+1=0=\chi(\mathbb{T}^2)$.
+      </p>
+    </div>
+    <div class="def-box">
+      <div class="lbl">The connecting trajectories</div>
+      <p style="margin:0;font-size:.9em;line-height:2.0;">
+        The coordinate circles $\{\phi=\pi/2\}$, $\{\theta=0\}$, $\{\theta=\pi\}$, $\{\phi=3\pi/2\}$ are invariant, giving exactly four one-step trajectories:
+        $$p\to a\text{ on }\{\phi=\pi/2\},\quad p\to b\text{ on }\{\theta=0\},$$
+        $$a\to q\text{ on }\{\theta=\pi\},\quad b\to q\text{ on }\{\phi=3\pi/2\}.$$
+        Hence $\widehat{\mathcal{M}}(p,a)\cong\widehat{\mathcal{M}}(p,b)\cong\widehat{\mathcal{M}}(a,q)\cong\widehat{\mathcal{M}}(b,q)\cong\{*\}$.
+      </p>
+    </div>
+    <div class="new-box">
+      <div class="lbl">The $p\to q$ moduli space and its compactification</div>
+      <p style="margin:0;font-size:.9em;line-height:2.0;">
+        Every trajectory from $p$ to $q$ meets the transverse circle $\Sigma=\{\phi=\pi\}$ at a unique point $(\theta_*,\pi)$ with $\theta_*\in(0,\pi)$, giving a bijection $\widehat{\mathcal{M}}(p,q)\longrightarrow(0,\pi)$.
+        As $\theta_*\to 0$ the orbit converges to $p\to b\to q$; as $\theta_*\to\pi$ it converges to $p\to a\to q$. Therefore
+        $$\overline{\widehat{\mathcal{M}}(p,q)}\cong[0,\pi]\cong[0,1],$$
+        with endpoints corresponding to the two broken trajectories.
+      </p>
+    </div>
+    <div class="new-box">
+      <div class="lbl">What the picture proves locally at $q$</div>
+      <p style="margin:0;font-size:.9em;line-height:2.0;">
+        Near $q$, the closure of the unstable manifold of $p$ consists of the open two-dimensional region of direct $p\to q$ trajectories together with the two one-dimensional incoming branches through $a$ and $b$. On the compactified moduli side, the link at $q$ has two points, so the local picture is a cone on two points — two rays meeting at one vertex, as drawn in the animation.
+      </p>
+    </div>
+  </div>
+
 </section>
+
 
 <!-- §5 BRIDGE -->
 <section id="bridge" class="section">
